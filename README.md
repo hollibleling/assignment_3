@@ -60,12 +60,16 @@
 - Docker로 개발하면 가산점이 있습니다.
 
 ## 구현 기능
-### 로그인 기능
+### 회사명 자동완성
 - 내용추가
 
-### 상품 관리 기능
-- 상품 전체목록 조회 가능 및 페이징 기능(한 페이지당 5개 상품)
-- 사용자는 상품 조회만 가능하며 관리자는 상품 추가/수정/삭제 가능
+### 회사 이름으로 회사 검색
+- header의 x-wanted-language 언어값에 따라 해당 언어로 회사명 검색하여 출력
+- 출력에 "company_name", "tags" 포함
+- 검색된 회사가 없는경우 404를 리턴
+
+### 새로운 회사 추가
+- 내용추가
 
 ## API
 
@@ -75,24 +79,13 @@
 
 | Method | endpoint | Request Header | Request Body | Remark |
 |:------:|-------------|-----|------|--------|
-|POST|/user||email, password, role|회원가입|
-|POST|/api/token/||email, password|로그인|
-|POST|/product|bearer token|category, name, description, isSold, badge|상품 등록|
-|GET|/product|bearer token|    |전체 상품 조회|
-|GET|/product/product_id|bearer token|    |개별 상품 조회|
-|PATCH|/product/product_id|bearer token|category, name, description, isSold, badge|상품 수정|
-|DELETE|/product/product_id|bearer token|| 상품 삭제 |
-|POST|/product/product_id/item|bearer token|name, size, price, isSold, menuid|상품 아이템 등록|
-|PATCH|/product/product_id/item/item_id|bearer token|name, size, price, isSold, menuid|상품 아이템 수정|
-|DELETE|/product/product_id/item/item_id|bearer token||상품 아이템 삭제|
-|POST|/product/product_id/tag|bearer token|name, type, menuid|상품 태그 등록|
-|PATCH|/product/product_id/tag/tag_id|bearer token|name, type, menuid|상품 태그 수정|
-|DELETE|/product/product_id/tag/tag_id|bearer token||상품 태그 삭제|
+|GET|/companies/\<str:name\>/|||회사 이름으로 회사 검색|
+
+
 
 
 ## API 명세(request/response)
 
-[post man 링크](https://documenter.getpostman.com/view/17228945/UVC3j7ZC#intro)
 
 
 ## 폴더 구조
