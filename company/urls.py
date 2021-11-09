@@ -4,5 +4,5 @@ from .views import CompanySearchView
 
 app_name = 'company'
 urlpatterns = [
-    path('<str:name>/', CompanySearchView.as_view()),
+    path('<str:name>', CompanySearchView.as_view()),
 ]

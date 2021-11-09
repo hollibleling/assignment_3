@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from company.models import *
+
 
 class CompanySearchSerializers(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
@@ -19,9 +21,11 @@ class CompanySearchSerializers(serializers.ModelSerializer):
 
 
 class CompanyNameSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(max_length=100)
+    company_name = serializers.SerializerMethodField()
 
     class Meta:
         model = CompanyName
-        fields = ['id', 'name', 'company', 'language']
-    
+        fields = ['company_name']
+
+    def get_company_name(self, obj):
+        return obj.name
