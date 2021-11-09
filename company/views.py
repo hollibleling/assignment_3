@@ -50,7 +50,7 @@ class CompanySearchView(APIView):
         language = request.headers.get("x-wanted-language", "ko")
         if not CompanyName.objects.filter(name=name, language__name=language).exists():
             return Response(status=status.HTTP_404_NOT_FOUND)
-        company = CompanyName.objects.filter(name=name, language__name=language)
+        company = CompanyName.objects.get(name=name, language__name=language)
 
         serializer = CompanySearchSerializers(company, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
