@@ -80,7 +80,7 @@
 | Method | endpoint | Request Header | Request Body | Remark |
 |:------:|-------------|-----|------|--------|
 |GET|/companies/\<str:name\>/|x-wanted-language||회사 이름으로 회사 검색|
-|GET|/search/?query=\<str>\|x-wanted-language||회사 검색시 자동 완성|
+|GET|/search/?query=\<str\>|x-wanted-language||회사 검색시 자동 완성|
 |POST||x-wanted-language||회사 추가 기능|
 
 
