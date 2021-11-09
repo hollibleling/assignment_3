@@ -1,14 +1,20 @@
+from django.db.models.deletion import RESTRICT
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+
+from company.serializers import CompanyNameSerializer, CompanySearchSerializers
+from company.models import *
+
 import json
 
 from django.http  import JsonResponse
 
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
-
-from company.models import *
-from company.serializers import CompanyNameSerializer
 
 class CompanyViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+
     serializer_class = CompanyNameSerializer
     queryset = CompanyName.objects.all()
 
@@ -38,3 +44,13 @@ class CompanyViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
                 lists.append(product.name)
 
         return name
+
+class CompanySearchView(APIView):
+    def get(self, request, name):
+        language = request.headers.get("x-wanted-language", "ko")
+        if not CompanyName.objects.filter(name=name, language__name=language).exists():
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        company = CompanyName.objects.get(name=name, language__name=language)
+
+        serializer = CompanySearchSerializers(company, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

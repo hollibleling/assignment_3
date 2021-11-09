@@ -11,7 +11,6 @@ class Company(models.Model):
     def __str__(self):
         return ", ".join([company_name.name for company_name in self.name_set.all()])
 
-
 class CompanyName(models.Model):
     name = models.CharField(max_length=100)
     company = models.ForeignKey(Company, models.DO_NOTHING)

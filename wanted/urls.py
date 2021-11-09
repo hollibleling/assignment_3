@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.urls.conf import include, include
 from rest_framework import routers
-
 from company.views import CompanyViewSet
 
 router = routers.SimpleRouter(trailing_slash=False)
@@ -25,4 +25,5 @@ router.register('search', CompanyViewSet, basename='search')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('companies/', include('company.urls'))
 ]
