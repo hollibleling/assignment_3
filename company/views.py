@@ -1,26 +1,40 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.views import View
+import json
+
+from django.http  import JsonResponse
+
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 
 from company.models import *
+from company.serializers import CompanyNameSerializer
 
+class CompanyViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+    serializer_class = CompanyNameSerializer
+    queryset = CompanyName.objects.all()
 
-class SearchView(View):
-    def get(self, request):
-        word = request.GET.get('queary')
+    def get_queryset(self):
+        word = self.request.query_params.get('queary', None)
+        lang = self.request.headers['x-wanted-language']
         lists = []
 
         if word == "":
-            return JsonResponse({"Message" : ""}, status=200)
+            name = ""
+            return name
 
-        name = CompanyName.objects.filter(name__icontains = word)
+        if lang == 'ko':
+            name = CompanyName.objects.filter(name__icontains = word, language_id = 1)
+        elif lang == 'en':
+            name = CompanyName.objects.filter(name__icontains = word, language_id = 2)
+        elif lang == 'ja':
+            name = CompanyName.objects.filter(name__icontains = word, language_id = 3)
 
         if not name.exists():
-            return JsonResponse({"Message" : ""}, status=200)
+            name = ""
+            return name
 
         if name.exists():
             products = name
             for product in products:
                 lists.append(product.name)
 
-        return JsonResponse({"results" : lists}, status=200)
+        return name
