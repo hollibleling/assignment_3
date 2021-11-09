@@ -1,12 +1,8 @@
 import pytest
 import json
 
-<<<<<<< HEAD
-from app import app
-=======
 # from app import app
 from company.models import *
->>>>>>> main
 
 
 @pytest.fixture
