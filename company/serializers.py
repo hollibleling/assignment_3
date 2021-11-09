@@ -1,29 +1,18 @@
-from django.db import models
-from django.db.models import fields
 from rest_framework import serializers
-from .models import Language, Company, CompanyName, CompanyTag, Tag
+from .models import Company, CompanyName, Tag
 
-class LanguageSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Language
-        fields = '__all__'
+class CompanySearchSerializers(serializers.ModelSerializer):
+    tags = serializers.SerializerMethodField()
+    company_name = serializers.SerializerMethodField()
 
-class CompanySerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Company
-        fields = '__all__'
-
-class CompanyNameSerializers(serializers.ModelSerializer):
     class Meta:
         model = CompanyName
-        fields = '__all__'
+        fields = ['company_name', 'tags']
 
-class CompanyTagSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = CompanyTag
-        fields = '__all__'
-
-class TagSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = Tag
-        fields = '__all__'
+    def get_tags(self, obj):
+        company = Company.objects.get(id=obj.company_id)
+        tag = Tag.objects.filter(companytag__company=company)
+        return [i.name for i in tag]
+        
+    def get_company_name(self, obj):
+        return obj.name
