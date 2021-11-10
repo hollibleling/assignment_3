@@ -69,7 +69,9 @@
 - 검색된 회사가 없는경우 404를 리턴
 
 ### 새로운 회사 추가
-- 내용추가
+- header의 x-wanted-language 언어값에 따라 해당 언어로 입력값 리턴
+- 새로운 언어로 데이터가 추가되면 기존의 데이터베이스에 새로 언어를 생성하고 데이터를 추가
+- company_name이나 tag를 입력하지 않을 시 Key_error 
 
 ## 기술 스택
 - Back-End : python, django-rest-framework, sqlite3
