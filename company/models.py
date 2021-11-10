@@ -6,10 +6,9 @@ class Language(models.Model):
 
 
 class Company(models.Model):
-    id = models.BigIntegerField(primary_key=True)
 
     def __str__(self):
-        return ", ".join([company_name.name for company_name in self.name_set.all()])
+        return ", ".join([company_name.name for company_name in self.companyname_set.all()])
 
 
 class CompanyName(models.Model):
