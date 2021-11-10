@@ -71,6 +71,10 @@
 ### 새로운 회사 추가
 - 내용추가
 
+## 기술 스택
+- Back-End : python, django-rest-framework, sqlite3
+- Tool     : Git, Github, slack, postman
+
 ## API
 
 ## 실행 방법(endpoint 호출방법)
