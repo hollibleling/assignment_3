@@ -55,7 +55,7 @@ class CompanySerializer(serializers.ModelSerializer):
             for j in i['tag_name'].keys():
                 language = Language.objects.get_or_create(name=j)[0]
                 tag = Tag.objects.get_or_create(name=i['tag_name'][j], language=language)[0]
-                CompanyTag.objects.create(company=company, tag=tag)
+                CompanyTag.objects.get_or_create(company=company, tag=tag)
 
         return company
 
