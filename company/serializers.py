@@ -1,15 +1,12 @@
-from django.db.models import fields
 from company.models import *
 from rest_framework import serializers
 
-class CompanyTagSerializer(serializers.ModelSerializer):
 
-    def to_representation(self, instance):
-        return {
-            'id'        : instance.id,
-            'companyid' : instance.company_id,
-            'tagid'     : instance.tag_id,
-        }
+class CompanyTagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanyTag
+        fields = ['id', 'company', 'tag']
+
 
 class CompanyNameSerializer(serializers.ModelSerializer):
     company_name = serializers.SerializerMethodField()
@@ -21,13 +18,6 @@ class CompanyNameSerializer(serializers.ModelSerializer):
     def get_company_name(self, obj):
         return obj.name
 
-    def to_representation(self, instance):
-        return {
-            'id'          : instance.id,
-            'company_name': instance.name,
-            'companyid'   : instance.company_id,
-            'languageid'  : instance.language_id,
-        }
 
 class TagSerializer(serializers.ModelSerializer):
     name = serializers.CharField(max_length=10)
@@ -43,28 +33,39 @@ class TagSerializer(serializers.ModelSerializer):
             'languageid': instance.language_id,
         }
 
+
 class CompanySerializer(serializers.ModelSerializer):
-    id         = serializers.BigIntegerField(primary_key=True)
-    tag        = TagSerializer(read_only=True, many=True)
-    companytag = CompanyTagSerializer(read_only=True, many=True)
+    # tags = TagSerializer(read_only=True, many=True)
+    # company_name = CompanyTagSerializer(read_only=True, many=True)
 
     class Meta:
         model = Company
         fields = ['id']
 
-    def to_representation(self, instance):
-        return {
-            'id'        : instance.id,
-        }
+    def to_internal_value(self, data):
+        return data
 
     def create(self, validated_data):
-        companyname = validated_data
         company = Company.objects.create()
-        korean = Language.objects.get_or_create(name=validated_data[''])
-        english = Language.objects.get_or_create(name=validated_data[''])
-        tw = Language.objects.get_or_create(name=validated_data[''])
-        Tag.objects.create()
-        
+        for i in validated_data['company_name'].keys():
+            language = Language.objects.get_or_create(name=i)[0]
+            CompanyName.objects.create(name=validated_data['company_name'][i], company=company, language=language)
+
+        for i in validated_data['tags']:
+            for j in i['tag_name'].keys():
+                language = Language.objects.get_or_create(name=j)[0]
+                tag = Tag.objects.create(name=i['tag_name'][j], language=language)
+                CompanyTag.objects.create(company=company, tag=tag)
+
+        return company
+
+    def to_representation(self, instance):
+        return {
+            "company_name": instance.companyname_set.get(language__name=self.validated_data['lang']).name,
+            "tags": [i.tag.name for i in instance.companytag_set.filter(tag__language__name='tw')]
+        }
+
+
 class LanguageSerializer(serializers.ModelSerializer):
     name    = serializers.CharField(max_length=50)
     tag     = TagSerializer(read_only=True, many=True)
@@ -80,6 +81,7 @@ class LanguageSerializer(serializers.ModelSerializer):
             'name'      : instance.name,
             'tagid'     : instance.tag_id,
         }
+
 
 class CompanySearchSerializers(serializers.ModelSerializer):
     tags = serializers.SerializerMethodField()
