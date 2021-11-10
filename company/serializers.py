@@ -62,7 +62,7 @@ class CompanySerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         return {
             "company_name": instance.companyname_set.get(language__name=self.validated_data['lang']).name,
-            "tags": [i.tag.name for i in instance.companytag_set.filter(tag__language__name='tw')]
+            "tags": [i.tag.name for i in instance.companytag_set.filter(tag__language__name=self.validated_data['lang'])]
         }
 
 
