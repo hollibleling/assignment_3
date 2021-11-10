@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.decorators import action
+from rest_framework.validators import ValidationError
 
 from company.models import *
 from company.serializers import CompanyNameSerializer, CompanySearchSerializers, CompanySerializer
@@ -48,7 +49,7 @@ class CompanySearchViewSet(ListModelMixin, GenericViewSet):
         word = self.request.query_params.get('query', None)
         lang = self.request.headers['x-wanted-language']
         if word == "":
-            raise Exception('Not data')
+            raise ValidationError('Not data')
 
         if lang == 'ko':
             name = CompanyName.objects.filter(name__icontains = word, language_id = 1)
@@ -58,6 +59,6 @@ class CompanySearchViewSet(ListModelMixin, GenericViewSet):
             name = CompanyName.objects.filter(name__icontains = word, language_id = 3)
 
         if not name.exists():
-            raise Exception('Not data')
+            raise ValidationError('Not data')
 
         return name
